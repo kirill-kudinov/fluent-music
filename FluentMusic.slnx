@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="FluentMusic.Core/FluentMusic.Core.csproj" />
+  <Project Path="FluentMusic.Unit.Tests/FluentMusic.Unit.Tests.csproj" />
+  <Project Path="FluentMusic/FluentMusic.csproj">
+    <Deploy />
+  </Project>
+</Solution>
