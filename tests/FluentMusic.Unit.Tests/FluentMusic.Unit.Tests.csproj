@@ -25,6 +25,4 @@
       <ProjectReference Include="..\..\src\FluentMusic.Core\FluentMusic.Core.csproj" />
     </ItemGroup>
 
- 
-
 </Project>
