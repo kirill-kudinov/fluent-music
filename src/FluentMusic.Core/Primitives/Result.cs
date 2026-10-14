@@ -4,32 +4,48 @@ using System.Threading.Tasks;
 
 namespace FluentMusic.Core.Primitives;
 
+internal enum State : byte
+{
+    Ok,
+    Fail
+}
+
 public readonly record struct Result<T>
 {
     private readonly T? _value;
-    public readonly bool IsOK;
-    public readonly bool isError => !IsOK;
-    public readonly Error Error;
+    private readonly State _state;
+    private readonly Error _error;
+    public readonly bool IsOk => _state == State.Ok;
+    public readonly bool IsError => _state == State.Fail;
+
+    public Error Error => _state switch
+    {
+        State.Ok => Error.None,
+        State.Fail => _error,
+        _ => ResultErrors.NullValue
+    };
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal Result(in T? value)
     {
         _value = value;
-        IsOK = true;
+        _state = State.Ok;
+        _error = Error.None;
     }
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal Result(in Error error)
     {
-        Error = error;
-        IsOK = false;
+        _error = error.Code is null ? ResultErrors.NullValue : error; 
+        _state = State.Fail;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryGetOk([NotNullWhen(true)] out T? value)
     {
         value = _value;
-        return IsOK;
+        return IsOk;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -47,14 +63,12 @@ public static class Result
     private static readonly Result<Unit> OkUnit = new(Unit.Value);
     public static Task<Result<Unit>> OkTask { get; } = Task.FromResult(OkUnit);
     public static Result<Unit> Ok() => OkUnit;
-    public static Task<Result<Unit>> NullValueTask { get; } =
-        Task.FromResult<Result<Unit>>(Error(ResultErrors.NullValue));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static FailedResult Error(in Error? error)
+    public static FailedResult Fail(in Error? error)
     {
         return error is null
-            ? Error(ResultErrors.NullError)
+            ? new FailedResult(ResultErrors.NullValue)
             : new FailedResult(error);
     }
 
@@ -63,9 +77,9 @@ public static class Result
     {
         if (value is null)
         {
-            return new FailedResult(ResultErrors.NullValue); 
+            return new FailedResult(ResultErrors.NullValue);
         }
 
-        return new Result<T>(in value); 
+        return new Result<T>(in value);
     }
 }
