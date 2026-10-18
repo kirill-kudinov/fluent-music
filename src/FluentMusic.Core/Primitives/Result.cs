@@ -65,11 +65,9 @@ public static class Result
     public static Result<Unit> Ok() => OkUnit;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static FailedResult Fail(in Error? error)
+    public static FailedResult Fail(in Error error)
     {
-        return error is null
-            ? new FailedResult(ResultErrors.NullValue)
-            : new FailedResult(error);
+        return new FailedResult(error);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
