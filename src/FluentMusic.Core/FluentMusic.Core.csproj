@@ -7,4 +7,9 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Albums\" />
+      <Folder Include="Import\" />
+    </ItemGroup>
+
 </Project>

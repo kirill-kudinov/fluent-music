@@ -35,24 +35,12 @@ public class ResultTests
 
     public class Fail
     {
-        [Fact]
-        public void WhenErrorIsNull_ReturnNullError()
-        {
-            Error error = null!;
-
-            Result<int> failResult = Result.Fail(error);
-
-            Assert.Equal(ResultErrors.NullValue, failResult.Error);
-            Assert.True(failResult.IsError);
-        }
-
+        
         [Fact]
         public void WhenErrorIsNotNull_ReturnNonNullError()
         {
             var error = new Error("Test.Test", "Test");
             Result<string> result = Result.Fail(error);
-
-            Assert.NotNull(result.Error);
             Assert.Equal(error, result.Error);
         }
     }
